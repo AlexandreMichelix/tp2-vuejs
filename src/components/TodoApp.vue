@@ -17,7 +17,7 @@
       <select v-model="task.assigned" class="i3">
         <option value="">--Please choose an option--</option>
         <option value="Damien">Damien</option>
-        <option value="Alex">Alex</option>
+        <option value="Alexandre">Alexandre</option>
         <option value="Autre">Autre</option>
       </select>
       <button @click="submitTask()" class="i4">Ajouter</button>
