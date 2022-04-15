@@ -146,16 +146,10 @@ export default {
       }
     },
     deleteTodos() {
-      this.tasks = this.tasks.filter((task) => (task = !this.set.has(task.id)));
+      this.$store.dispatch("delete_todos", this.set);
     },
     next(index) {
-      if (this.tasks[index].status === this.stats.toDo) {
-        this.tasks[index].status = this.stats.inProgress;
-      } else if (this.tasks[index].status === this.stats.inProgress) {
-        this.tasks[index].status = this.stats.finished;
-      } else if (this.tasks[index].status === this.stats.finished) {
-        this.tasks[index].status = this.stats.toDo;
-      }
+      this.$store.dispatch("next_status", {stats: this.stats, index: index});
     },
   },
 };

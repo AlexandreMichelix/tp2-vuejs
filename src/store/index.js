@@ -37,15 +37,20 @@ const store = new Vuex.Store({
       commit("change_todo", {edited ,todo});
     },
     delete_todo({ commit }, index) {
-      commit("change_todo", index);
-    }
+      commit("delete_todo", index);
+    },
+    delete_todos({ commit }, set) {
+      commit("delete_todos", set);
+    },
+    next_status({ commit }, {stats, index}) {
+      commit("next_status", {stats, index});
+    },
   },
   mutations: {
     add_todo(state, todo) {
       state.tasks.unshift(todo);
     },
     change_todo(state, {edited ,todo}) {
-      console.log(edited, todo);
       state.tasks[edited].id = edited;
       state.tasks[edited].name = todo.name;
       state.tasks[edited].hours = todo.hours;
@@ -53,6 +58,18 @@ const store = new Vuex.Store({
     },
     delete_todo(state, index) {
       state.tasks.splice(index, 1);
+    },
+    delete_todos(state, set) {
+      state.tasks = state.tasks.filter((task) => (task = !set.has(task.id)));
+    },
+    next_status(state, {stats, index}) {
+      if (state.tasks[index].status === stats.toDo) {
+        state.tasks[index].status = stats.inProgress;
+      } else if (state.tasks[index].status === stats.inProgress) {
+        state.tasks[index].status = stats.finished;
+      } else if (state.tasks[index].status === stats.finished) {
+        state.tasks[index].status = stats.toDo;
+      }
     }
   }
 })
