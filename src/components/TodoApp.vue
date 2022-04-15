@@ -1,6 +1,5 @@
 <template>
   <div class="container">
-    {{  }}
     <h2 class="t1">Ma superbe TodoList</h2>
     <div class="content">
       <input
@@ -79,7 +78,7 @@
 
 <script>
 import "tailwindcss/tailwind.css";
-import { v4 as uuidv4 } from "uuid";
+import { mapState } from "vuex";
 
 export default {
   name: "HelloWorld",
@@ -103,42 +102,22 @@ export default {
         inProgress: "in-progress",
         finished: "finished",
       },
-      tasks: [
-        {
-          id: 1,
-          name: "Test",
-          hours: "2",
-          assigned: "Damien",
-          status: "to-do",
-        },
-        {
-          id: 2,
-          name: "Test2",
-          hours: "8",
-          assigned: "Alexandre",
-          status: "in-progress",
-        },
-      ],
     };
+  },
+  computed: {
+    // mix this into the outer object with the object spread operator
+    ...mapState([
+      'tasks'
+    ]),
   },
   methods: {
     submitTask() {
       if (!this.task.name || !this.task.hours || !this.task.assigned)
         return window.alert("Veuillez remplir tous les champs");
-      if (this.tasks.assigned) {
-        console.log('ok');
-      }
-      if (this.tasks.assigned) {
-        console.log('ah');
-      }
       if (this.editedTask === null) {
-        this.task.id = uuidv4();
-        console.log(this.task.id);
-        this.tasks.unshift(this.task);
+        this.$store.dispatch("add_todo", this.task);
       } else {
-        this.tasks[this.editedTask].name = this.task.name;
-        this.tasks[this.editedTask].hours = this.task.hours;
-        this.tasks[this.editedTask].assigned = this.task.assigned;
+        this.$store.dispatch("change_todo", {edited: this.editedTask ,todo: this.task});
         this.editedTask = null;
       }
 
@@ -151,13 +130,12 @@ export default {
       };
     },
     deleteTask(index) {
-      this.tasks.splice(index, 1);
+      this.$store.dispatch("delete_todo", index);
     },
     editTask(index) {
       this.task.name = this.tasks[index].name;
       this.task.hours = this.tasks[index].hours;
       this.task.assigned = this.tasks[index].assigned;
-
       this.editedTask = index;
     },
     check(id) {
